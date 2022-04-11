@@ -1,0 +1,93 @@
+body {
+  background-color: #fff !important;
+}
+.app {
+  display: flex;
+  max-width: calc(100vw - 20px);
+  height: 100vh;
+  flex-flow: column wrap;
+}
+.display,
+.controls {
+  
+  margin: 5px;
+  border: 1px solid black;
+  height: 100%;
+  box-sizing: border-box;
+}
+.display {
+  width: 66%;
+}
+.controls {
+  background-color: #003366;
+  width: 34%;
+  display: flex;
+  flex-flow: column;
+}
+.controls div {
+  width: 100%;
+  border-bottom: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  box-sizing: border-box;
+}
+.controls div:nth-child(2) {
+  flex-grow: 2;
+}
+.controls div:nth-child(1),
+.controls div:nth-child(3) {
+  flex-basis: 20%;
+}
+.controls .rocket svg {
+  min-width: 50px;
+}
+.controls button {
+  width: 100%;
+}
+.controls .input {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+@media only screen and (min-width: 992px) {
+  .app {
+    flex-flow: row wrap;
+    max-width: 100vw;    
+    box-sizing: border-box;
+    max-height: calc(100vh - 20px);
+  }
+  .display,
+  .controls {
+    flex-basis: 100%;
+    box-sizing: border-box;
+    
+  }
+  .display {
+    height: 66%;
+  }
+  .controls {
+    height: 34%;
+    flex-flow: column wrap;
+  }
+  .controls div {
+    min-height: 100%;
+    width: auto;
+    border-bottom: 0;
+    border-right: 1px solid black;
+  }
+  .controls div button {
+    min-width: auto;
+    width: auto;
+  }
+  .controls div:nth-child(2) :nth-child(1) {
+    flex-basis: 50%;
+  }
+  .controls div:nth-child(1) :nth-child(1) {
+    flex-basis: 80%;
+  }
+  .controls div:nth-child(3) :nth-child(n) {
+    width: calc(50% - 20px);
+  }   
+}
