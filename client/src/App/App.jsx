@@ -8,6 +8,8 @@ import "./style.css";
 import useFetch from "../utils/useFetch";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 
+import { useSelector, useDispatch } from "react-redux";
+
 const columnsNames = [
   "capsule_serial",
   "capsule_id",
@@ -25,16 +27,17 @@ const createHeaderName = (str) => {
 const url = "https://api.spacexdata.com/v3/";
 
 const App = () => {
-  const [value, setValue] = useState("");
+  const counter = useSelector((state) => state.spaceData.counter);
+  const value = useSelector((state) => state.spaceData.value);
+  const columnWidth = useSelector((state) => state.spaceData.columnWidth);
+  const rowsCapsules = useSelector((state) => state.spaceData.rowsCapsules);
 
-  const [counter, setCounter] = useState(0);
+  const dispatch = useDispatch();
 
   const [{ data, error }, doFetch] = useFetch(
     url,
     "capsules?sort=original_launch&order=desc"
   );
-
-  const [columnWidth, setColumnWidth] = useState(0);
 
   const columns = columnsNames.reduce((res, cur) => {
     res.push({
@@ -45,24 +48,23 @@ const App = () => {
     return res;
   }, []);
 
-  const [rowsCapsules, setRowsCapsules] = useState([]);
-
   const validateInput = (value) => {
     if (value.length > 15) return false;
     const patternDisallow = /(#|\$|@|&|%)/;
     const val = value.replace(patternDisallow, "");
-    setValue(val);
+    dispatch({ type: "value/changed", payload: val });
   };
 
   const findMatches = () => {
     const matches = rowsCapsules.filter((item) => item.capsule_id === value);
-    setRowsCapsules(matches);
+    dispatch({ type: "rowsCapsules/changed", payload: matches });
   };
 
   useEffect(() => {
     if (counter == 0) return;
     doFetch();
   }, [counter]);
+
   useEffect(() => {
     if (data && data.length) {
       const rows = data.reduce((res, cur, id) => {
@@ -73,7 +75,7 @@ const App = () => {
         res.push(record);
         return res;
       }, []);
-      setRowsCapsules(rows);
+      dispatch({ type: "rowsCapsules/changed", payload: rows });
     }
   }, [data]);
 
@@ -82,7 +84,7 @@ const App = () => {
       Math.round(
         document.querySelector(".display")?.offsetWidth / columnsNames.length
       ) - 5;
-    setColumnWidth(width);
+    dispatch({ type: "columnWidth/changed", payload: width });
   }, []);
 
   return (
@@ -97,7 +99,12 @@ const App = () => {
               <Button
                 label="Capsules"
                 primary
-                onClick={() => setCounter(counter + 1)}
+                onClick={() =>
+                  dispatch({
+                    type: "counter/incremented",
+                    payload: counter + 1,
+                  })
+                }
               />
             </div>
             <div className="rocket">
